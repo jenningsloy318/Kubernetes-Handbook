@@ -1,0 +1,25 @@
+{
+    "title": "Kubernetes-handbook",
+    "author": "Jennings Liu",
+    "gitbook": ">= 3.2.2",
+    "language": "zh-cn",
+    "plugins": [
+        "github",
+        "page-treeview",
+        "editlink"    ],
+    "pluginsConfig": {
+        "page-treeview": {
+            "copyright": "Copyright  SAP",
+            "minHeaderCount": "2",
+            "minHeaderDeep": "2"
+        },
+        "github": {
+            "url": "https://github.com/jenningsloy318/Kubernetes-Handbook"
+        },
+        "editlink": {
+            "base": "https://github.com/jenningsloy318/Kubernetes-Handbook/blob/master/",
+            "label": "edit This Page"
+        }
+    },
+    "generator": "site"
+}
