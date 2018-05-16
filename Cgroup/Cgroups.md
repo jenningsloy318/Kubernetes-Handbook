@@ -24,10 +24,10 @@ MemoryLimit=8G
 
 ## Create container.slice
 
-/lib/systemd/system/runtime.slice
+/lib/systemd/system/container.slice
 ```
 [Unit]
-Description=Resource limits for kubelet and docker engine
+Description=Resource limits for  containers
 DefaultDependencies=no
 Before=slices.target
 Requires=-.slice
@@ -35,9 +35,26 @@ After=-.slice
 [Slice]
 MemoryLimit=60G
 ```
+## Set the system.slice resource 
 
-> Here we only set the Memory limit, we can add any kind of limits here
+```
+[Unit]
+Description=System Slice
+Documentation=man:systemd.special(7)
+DefaultDependencies=no
+Before=slices.target
+[Slice]
+MemoryLimit=4G
+```
+
+> Here we only set the Memory limit, we can add any kinds of limits here
 
 > Here we create slice with cgroup v1, the parameter is different if we use cgroup v2 
 
 > details of cgroup v1/v2 configuraton in systemd, we can find it on page [systemd.resource-control](https://www.freedesktop.org/software/systemd/man/systemd.resource-control.html).
+
+> in V1 model, resource restriction only have upper limit, for example `MemoryLimit=`.
+
+> in V2 model, resource restriction have both upper and lower limit, for example `MemoryMax=` and `MemoryLow=`
+
+> untill now, docker engine still don't support cgroup v2 in ubuntu 18.04 though ubuntu 18.04 can boot with only cgroup v2.
