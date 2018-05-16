@@ -1,0 +1,18 @@
+{
+    "debug": true,
+    "exec-opts": ["native.cgroupdriver=systemd"],
+    "cgroup-parent": "container.slice",
+    "hosts": ["tcp://0.0.0.0:2376","unix:///var/run/docker.sock"],
+    "ip": "0.0.0.0",
+    "log-driver": "journald",
+    "log-opts":  {"tag":"docker_{{.Name}}_{{.ID}}"},
+    "metrics-addr" : "0.0.0.0:9323",
+    "experimental" : true,
+    "insecure-registries" : [""],
+    "storage-driver": "btrfs",
+    "tlsverify" : true,
+    "tlscacert": "/etc/docker/tls/DockerCA.pem",
+    "tlscert": "/etc/docker/tls/docker-server.pem",
+    "tlskey": "/etc/docker/tls/docker-server-key.pem"
+
+}
