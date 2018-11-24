@@ -18,7 +18,7 @@ Modern Linux are leverage journald for logs, but in default conf, journal logs a
     #SyncIntervalSec=5m
     #RateLimitInterval=30s
     #RateLimitBurst=1000
-    SystemMaxUse=20%
+    SystemMaxUse=10G
     #SystemKeepFree=
     #SystemMaxFileSize=
     #SystemMaxFiles=100
@@ -41,6 +41,6 @@ Modern Linux are leverage journald for logs, but in default conf, journal logs a
     ```
 
     - Storage=auto：“auto”: The storage mode is like persistent — data will be written to disk under /var/log/journal/
-    - SystemMaxuse: This parameter controls the maximum disk space the journal can consume when it’s persistent
+    - SystemMaxuse: This parameter controls the maximum disk space the journal can consume when it’s persistent;Specify values in bytes or use K, M, G, T, P, E as units for the specified sizes
     - ### Make sure the dir /var/log/journal exists
     - For all parameter, refer to https://www.freedesktop.org/software/systemd/man/journald.conf.html
