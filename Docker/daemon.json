@@ -11,7 +11,7 @@
     "insecure-registries" : [""],
     "storage-driver": "btrfs",
     "tlsverify" : true,
-    "tlscacert": "/etc/docker/tls/DockerCA.pem",
+    "tlscacert": "/etc/docker/tls/docker-ca.pem",
     "tlscert": "/etc/docker/tls/docker-server.pem",
     "tlskey": "/etc/docker/tls/docker-server-key.pem"
 

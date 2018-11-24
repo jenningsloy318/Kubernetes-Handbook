@@ -109,4 +109,122 @@ if we need to configure it manually, following steps are required
 
 - for complete guide to configure `lvm-direct`, refer to http://docs.docker.com/storage/storagedriver/device-mapper-driver
 
-3.1.3 we can still use [zfs](https://docs.docker.com/storage/storagedriver/zfs-driver/) and [btrfs](https://docs.docker.com/storage/storagedriver/btrfs-driver/) as storage driver
+3.1.3 we can still use [zfs](https://docs.docker.com/storage/storagedriver/zfs-driver/) and [btrfs](https://docs.docker.com/storage/storagedriver/btrfs-driver/) as storage driver.
+
+
+## 4. Create CA ceritficates(optional)
+
+4.1 Create `docker-ca-csr.json`
+```json
+
+{
+    "CN": "Kubernetes docker CA",
+    "hosts": [
+    ],
+    "key": {
+        "algo": "rsa",
+        "size": 4096
+    },
+    "names": [
+        {
+            "C": "CN",
+            "ST": "SC",
+            "L": "Chengdu",
+            "O": "lmy.com .ltd",
+            "OU": "DevOps"
+        }
+    ],
+     "ca": {
+    "expiry": "262800h"
+     }
+}
+```
+
+4.2 Generate the docker CA
+```shell
+cfssl genkey -initca docker-ca-csr.json | cfssljson -bare docker-ca
+```
+
+4.3 Create docker-ca-config.json, which contains profiles of server/client.
+```json
+{
+  "signing": {
+    "default": {
+      "expiry": "8760h"
+    },
+    "profiles": {
+      "server": {
+        "usages": [
+          "signing",
+          "key encipherment",
+          "server auth"
+        ],
+        "expiry": "35040h"
+      },
+      "client": {
+        "usages": [
+          "signing",
+          "key encipherment",
+          "client auth"
+        ],
+        "expiry": "35040h"
+      }
+    }
+  }
+}
+```
+
+4.4 Create docker-server-csr.json, add the ip list(the node's all IP addresses that docker engine is runing on) to the `hosts`,
+```json
+{
+    "CN": "docker-server",
+    "hosts": [
+      "192.168.59.201",
+      "192.168.59.202",
+      "192.168.59.203",
+      "127.0.0.1",
+    ],
+    "key": {
+      "algo": "rsa",
+      "size": 4096
+    },
+    "names": [
+              {
+                  "C": "CN",
+                  "ST": "SC",
+                  "L": "Chengdu",
+                  "O": "lmy.com .ltd",
+                  "OU": "DevOps"
+              }
+    ]
+  }
+```
+4.5 Create docker-server cert 
+```shell
+cfssl gencert -ca=docker-ca -ca-key=docker-ca-key.pem -config=docker-ca-config.json -profile=server docker-server-csr.json | cfssljson -bare docker-server
+```
+
+4.6 Create docker-client-csr.json
+```json
+{
+    "CN": "docker-client",
+    "key": {
+      "algo": "rsa",
+      "size": 4096
+    },
+    "names": [
+              {
+                  "C": "CN",
+                  "ST": "SC",
+                  "L": "Chengdu",
+                  "O": "lmy.com .ltd",
+                  "OU": "DevOps"
+              }
+    ]
+  }
+```
+
+4.7 Create docker-client cert
+```
+cfssl gencert -ca=docker-ca -ca-key=docker-ca-key.pem -config=docker-ca-config.json -profile=client docker-client-csr.json | cfssljson -bare docker-client
+```
