@@ -28,10 +28,11 @@
 
 |component|version|
 |---------|-------|
-|Docker CE |18.05|
-|etcd| 3.1.12|
-|cilium|1.0.1|
-|colico|3.1.1|
+|Docker CE |18.06|
+|etcd| 3.2.24|
+|cilium|1.3.0|
+|calico|3.3.1|
+|kube-router|0.2.3|
 ## 4. OS 
 
 ubuntu 18.04 
