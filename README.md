@@ -33,6 +33,21 @@
 |cilium|1.3.0|
 |calico|3.3.1|
 |kube-router|0.2.3|
+|metallb|v0.7.3|
 ## 4. OS 
 
 ubuntu 18.04 
+
+## 5. BGP router
+Quagga:  
+- separate Linux host running as a router
+- can work with metallb to assign the loadbalancer IP for services
+- also can work with kube-router to expose POD/SVC IP
+- also can work with kube-router to  add external IP for service
+
+# Cluster Deployment
+
+1. All kubernetes master components can be deployed etheir in binary or pod mode
+2. Master nodes disable the workload
+3. Use IPVS for service proxy(kube-router or kube-proxy)
+4. Use NFS as the storage backend  
