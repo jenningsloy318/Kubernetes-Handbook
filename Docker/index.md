@@ -112,7 +112,9 @@ if we need to configure it manually, following steps are required
 3.1.3 we can still use [zfs](https://docs.docker.com/storage/storagedriver/zfs-driver/) and [btrfs](https://docs.docker.com/storage/storagedriver/btrfs-driver/) as storage driver.
 
 
-## 4. Create CA ceritficates(optional)
+## 4. Create certificates
+
+This step can be optional.
 
 4.1 Create `docker-ca-csr.json`
 ```json
