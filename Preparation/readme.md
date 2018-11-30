@@ -21,9 +21,23 @@ nmcli conn add type ovs-port conn.interface enp24s0Port0 master KubeBridge0 auto
 nmcli conn add type ethernet conn.interface enp24s0 master enp24s0Port0 autoconnect yes
 ```
 
+and then check ovs 
+```shell
+#ovs-vsctl show
+6f640d61-54ac-4644-b6b8-3b27db02294b
+    Bridge "KubeBridge0"
+        Port "MgmtPort0"
+            Interface "MgmtIface0"
+                type: internal
+        Port "enp24s0Port0"
+            Interface "enp24s0"
+                type: system
+    ovs_version: "2.10.0"
+```
 
 2. then add more internal interfaces which can be used more VMs
 ```shell
+#ovs-vsctl show
 ovs-vsctl add-port KubeBridge0 vnet0  -- set Interface vnet0  type=internal
 ovs-vsctl add-port KubeBridge0 vnet1  -- set Interface vnet1  type=internal
 ovs-vsctl add-port KubeBridge0 vnet2  -- set Interface vnet2  type=internal
@@ -34,20 +48,54 @@ ovs-vsctl add-port KubeBridge0 vnet6  -- set Interface vnet6  type=internal
 
 ```
 
+then check the port 
+```shell
+#ovs-vsctl show
+6f640d61-54ac-4644-b6b8-3b27db02294b
+    Bridge "KubeBridge0"
+        Port "vnet5"
+            Interface "vnet5"
+                type: internal
+        Port "vnet1"
+            Interface "vnet1"
+                type: internal
+        Port "vnet4"
+            Interface "vnet4"
+                type: internal
+        Port "vnet6"
+            Interface "vnet6"
+                type: internal
+        Port "vnet2"
+            Interface "vnet2"
+                type: internal
+        Port "MgmtPort0"
+            Interface "MgmtIface0"
+                type: internal
+        Port "enp24s0Port0"
+            Interface "enp24s0"
+                type: system
+        Port "vnet3"
+            Interface "vnet3"
+                type: internal
+        Port "vnet0"
+            Interface "vnet0"
+                type: internal
+    ovs_version: "2.10.0"
+```
 3. Create VMs
 ```shell 
-virt-install --name=kube-router --disk path=/data/libvirt/vms/kube-router.qcow2,size=20,format=qcow2 --vcpus 2  --memory=4096 --os-type=linux --os-variant=ubuntu18.04 --network type=direct,source=vnet0,source_mode=bridge --graphics spice  --console pty,target_type=serial   --noautoconsole --import
+#virt-install --name=kube-router --disk path=/data/libvirt/vms/kube-router.qcow2,size=20,format=qcow2 --vcpus 2  --memory=4096 --os-type=linux --os-variant=ubuntu18.04 --network type=direct,source=vnet0,source_mode=bridge --graphics spice  --console pty,target_type=serial   --noautoconsole --import
 
-virt-install --name=kube-master1 --disk path=/data/libvirt/vms/kube-master1.qcow2,size=20,format=qcow2 --vcpus 2  --memory=4096 --os-type=linux --os-variant=ubuntu18.04 --network type=direct,source=vnet1,source_mode=bridge --graphics spice  --console pty,target_type=serial   --noautoconsole --import
+#virt-install --name=kube-master1 --disk path=/data/libvirt/vms/kube-master1.qcow2,size=20,format=qcow2 --vcpus 2  --memory=4096 --os-type=linux --os-variant=ubuntu18.04 --network type=direct,source=vnet1,source_mode=bridge --graphics spice  --console pty,target_type=serial   --noautoconsole --import
 
-virt-install --name=kube-master2 --disk path=/data/libvirt/vms/kube-master2.qcow2,size=20,format=qcow2 --vcpus 2  --memory=4096 --os-type=linux --os-variant=ubuntu18.04 --network type=direct,source=vnet2,source_mode=bridge --graphics spice  --console pty,target_type=serial   --noautoconsole --import
+#virt-install --name=kube-master2 --disk path=/data/libvirt/vms/kube-master2.qcow2,size=20,format=qcow2 --vcpus 2  --memory=4096 --os-type=linux --os-variant=ubuntu18.04 --network type=direct,source=vnet2,source_mode=bridge --graphics spice  --console pty,target_type=serial   --noautoconsole --import
 
-virt-install --name=kube-master3 --disk path=/data/libvirt/vms/kube-master3.qcow2,size=20,format=qcow2 --vcpus 2  --memory=4096 --os-type=linux --os-variant=ubuntu18.04 --network type=direct,source=vnet3,source_mode=bridge --graphics spice  --console pty,target_type=serial   --noautoconsole --import
+#virt-install --name=kube-master3 --disk path=/data/libvirt/vms/kube-master3.qcow2,size=20,format=qcow2 --vcpus 2  --memory=4096 --os-type=linux --os-variant=ubuntu18.04 --network type=direct,source=vnet3,source_mode=bridge --graphics spice  --console pty,target_type=serial   --noautoconsole --import
 
-virt-install --name=kube-worker1 --disk path=/data/libvirt/vms/kube-worker1.qcow2,size=20,format=qcow2 --vcpus 2  --memory=4096 --os-type=linux --os-variant=ubuntu18.04 --network type=direct,source=vnet4,source_mode=bridge --graphics spice  --console pty,target_type=serial   --noautoconsole --import
+#virt-install --name=kube-worker1 --disk path=/data/libvirt/vms/kube-worker1.qcow2,size=20,format=qcow2 --vcpus 2  --memory=4096 --os-type=linux --os-variant=ubuntu18.04 --network type=direct,source=vnet4,source_mode=bridge --graphics spice  --console pty,target_type=serial   --noautoconsole --import
 
-virt-install --name=kube-worker2 --disk path=/data/libvirt/vms/kube-worker2.qcow2,size=20,format=qcow2 --vcpus 2  --memory=4096 --os-type=linux --os-variant=ubuntu18.04 --network type=direct,source=vnet5,source_mode=bridge --graphics spice  --console pty,target_type=serial   --noautoconsole --import
+#virt-install --name=kube-worker2 --disk path=/data/libvirt/vms/kube-worker2.qcow2,size=20,format=qcow2 --vcpus 2  --memory=4096 --os-type=linux --os-variant=ubuntu18.04 --network type=direct,source=vnet5,source_mode=bridge --graphics spice  --console pty,target_type=serial   --noautoconsole --import
 
-virt-install --name=kube-worker3 --disk path=/data/libvirt/vms/kube-worker3.qcow2,size=20,format=qcow2 --vcpus 2  --memory=4096 --os-type=linux --os-variant=ubuntu18.04 --network type=direct,source=vnet6,source_mode=bridge --graphics spice  --console pty,target_type=serial   --noautoconsole --import
+#virt-install --name=kube-worker3 --disk path=/data/libvirt/vms/kube-worker3.qcow2,size=20,format=qcow2 --vcpus 2  --memory=4096 --os-type=linux --os-variant=ubuntu18.04 --network type=direct,source=vnet6,source_mode=bridge --graphics spice  --console pty,target_type=serial   --noautoconsole --import
 ```
 
