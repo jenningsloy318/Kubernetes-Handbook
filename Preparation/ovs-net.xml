@@ -1,7 +1,0 @@
-<network>
-  <name>ovs-network</name>
-  <forward mode='bridge'/>
-  <bridge name='kube-br'/>
-  <virtualport type='openvswitch'/>
-</network>
-

@@ -99,3 +99,69 @@ then check the port
 #virt-install --name=kube-worker3 --disk path=/data/libvirt/vms/kube-worker3.qcow2,size=20,format=qcow2 --vcpus 2  --memory=4096 --os-type=linux --os-variant=ubuntu18.04 --network type=direct,source=vnet6,source_mode=bridge --graphics spice  --console pty,target_type=serial   --noautoconsole --import
 ```
 
+4. configure kube-router
+4.1 install quagga
+```shell
+# apt  install quagga
+```
+4.2 configure quagga 
+
+```shell
+cat /etc/quagga/zebra.conf
+! -*- zebra -*-
+!
+! zebra sample configuration file
+!
+! $Id: zebra.conf.sample,v 1.1 2002/12/13 20:15:30 paul Exp $
+!
+hostname kube-router
+password zebra
+enable password zebra
+!
+! Interface's description. 
+!
+!interface lo
+! description test of desc.
+!
+!interface sit0
+! multicast
+
+!
+! Static default route sample.
+!
+!ip route 0.0.0.0/0 203.181.89.241
+!
+
+!log file zebra.log
+```
+
+and 
+```shell
+cat  /etc/quagga/bgpd.conf 
+! -*- bgp -*-"
+hostname kube-router
+password password                                                                                    
+!enable password please-set-at-here                                                                  
+!                                                                                                    
+!bgp mulitple-instance                                                                               
+!                                                                                                    
+router bgp 64513                                                                                     
+  maximum-paths 4 
+  bgp router-id 192.168.3.100
+  neighbor 192.168.3.101 remote-as 64512                                                             
+  neighbor 192.168.3.102 remote-as 64512                                                             
+  neighbor 192.168.3.103 remote-as 64512                                                             
+  neighbor 192.168.3.104 remote-as 64512                                                             
+  neighbor 192.168.3.105 remote-as 64512                                                             
+  neighbor 192.168.3.106 remote-as 64512                                                             
+!                                                                                                    
+! access-list all permit any                                                                         
+!                                                                                                    
+!route-map set-nexthop permit 10                                                                     
+! match ip address all                                                                               
+! set ip next-hop 10.0.0.1                                                                           
+!                                                                                                    
+!log file /var/log/quagga/bgpd.log                                                                   
+!                                                                                                    
+log stdout  
+```
