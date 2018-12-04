@@ -30,6 +30,7 @@
 - k8s cluster DNS domain: k8s.org
 - external  DNS domain: k8s.net
 - Kubernetes API VIP: 192.168.3.110
+- Kubernetes ingress VIP: 192.168.3.111
 
 
 ## 3. Other components
