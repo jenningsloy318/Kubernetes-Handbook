@@ -20,6 +20,8 @@ https://stackoverflow.com/questions/47233577/what-is-the-different-functionality
 
 2. a client CA: 
     - this CA signs client certificates, and is used by the addon API server to authenticate users based on the client certificates they submit. The same client CA may be used for both the main Kubernetes API server as well as addon API servers, but a different CA may also be used. Using the same CA ensures that identity trust works the same way between the main Kubernetes API server and the addon API servers.As an example, the default cluster admin user generated in many Kubernetes setups uses client certificate authentication. Additionally, controllers or non-human clients running outside the cluster often use certificate-based authentication.
+    - can be used bootstrap kubelet TLS 
 
 3. a Proxy CA: 
     - this special CA signs proxy client certificates. Clients presenting these certificates are effectively trusted to masquerade as any other identity. When running behind the API aggregator, this must be the same CA used to sign the aggregator's proxy client certificate. When not running with an aggregator (e.g. pre-Kubernetes-1.7, without a separate aggregator pod), this simply needs to exist. The request header CA is used to verify a client cert presented by an authenticating proxy along with user info set in request headers. The proxy authenticated the user, proxies the request, and sets username/groups in headers. The API server verifies the client cert before trusting user info in any headers.
+    - can be used with metrics-server authentication
