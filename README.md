@@ -26,6 +26,11 @@
 - service: 10.40.0.0/16
 - loadbalancer: 10.50.0.0/16
 - service external: 10.50.0.0/16
+- DNS Service IP: 10.40.0.10
+- k8s cluster DNS domain: k8s.org
+- external  DNS domain: k8s.net
+- Kubernetes API VIP: 192.168.3.110
+
 
 ## 3. Other components
 
@@ -38,6 +43,7 @@
 |kube-router|0.2.3|
 |metallb|v0.7.3|
 |CoreDNS|v1.2.6|
+
 ## 4. OS 
 
 ubuntu 18.04 
