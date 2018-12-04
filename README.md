@@ -10,11 +10,13 @@
  
 |Node|IP address(k8s) | role| version|
 |------------|----------------|------|-----|
-|kube-master1| 192.168.136.132|master| 1.12|
-|kube-master2| 192.168.136.133|master| 1.12|
-|kube-master3| 192.168.136.134|master| 1.12|
-|kube-node1| 192.168.136.135|work-node| 1.12|
-|kube-node2| 192.168.136.136|work-node| 1.12|
+|kube-router| 192.168.3.100|Quagga| x |
+|kube-master1| 192.168.3.101|master| 1.13|
+|kube-master2| 192.168.3.102|master| 1.13|
+|kube-master3| 192.168.3.103|master| 1.13|
+|kube-worker1| 192.168.3.104|work-node| 1.13|
+|kube-worker2| 192.168.3.105|work-node| 1.13|
+|kube-worker3| 192.168.3.106|work-node| 1.13|
 
 
 
@@ -23,6 +25,7 @@
 - Pod: 10.30.0.0/16
 - service: 10.40.0.0/16
 - loadbalancer: 10.50.0.0/16
+- service external: 10.50.0.0/16
 
 ## 3. Other components
 
@@ -34,6 +37,7 @@
 |calico|3.3.1|
 |kube-router|0.2.3|
 |metallb|v0.7.3|
+|CoreDNS|v1.2.6|
 ## 4. OS 
 
 ubuntu 18.04 
@@ -44,6 +48,23 @@ Quagga:
 - can work with metallb to assign the loadbalancer IP for services
 - also can work with kube-router to expose POD/SVC IP
 - also can work with kube-router to  add external IP for service
+
+## 6. External DNS
+- PowerDNS
+- CoreDNS
+- Use [external-dns](https://github.com/kubernetes-incubator/external-dns) to synchronize the service and ingress in k8s cluster to external PowerDNS/CoreDNS, thus external can access the serive from outside
+
+
+## 7. kubelet TLS bootstrap
+- https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet-tls-bootstrapping/
+- https://kubernetes.io/docs/reference/access-authn-authz/bootstrap-tokens/
+
+## 8. User Management 
+- OpenLDAP 
+- [Dex](https://github.com/dexidp/dex)
+- apiserver configure odic 
+- apiserver enable RBAC
+
 
 # Cluster Deployment
 
