@@ -1,84 +1,110 @@
 Lab setup
 ---
 
-1. our environment will build on the openvswith and kvm/libvirt VMs, create a ovs bridge, then attach the host ethernet interface, create a mgmt interface on the bridge, and assigh ip address to the mgmt interface or using dhcp; as new version of NetworkManger can support ovs bridge/port/interface, we can use nmcli to create these items.
+1. our environment will build on the openvswith and kvm/libvirt VMs, create a ovs bridge, then attach the host ethernet interface, create a mgmt interface on the bridge, and assigh ip address to the mgmt interface or using dhcp; 
+- /etc/sysconfig/network-scripts/ifcfg-enp24s0
+```shell
+cat /etc/sysconfig/network-scripts/ifcfg-enp24s0
+DEVICE=enp24s0
+ONBOOT=yes
+DEVICETYPE=ovs
+TYPE=OVSPort
+OVS_BRIDGE=br-k8s
+BOOTPROTO=none
+HOTPLUG=no
+```
+
+- /etc/sysconfig/network-scripts/ifcfg-br-k8s
+```shell
+cat /etc/sysconfig/network-scripts/ifcfg-br-k8s
+DEVICE=br-k8s
+ONBOOT=yes 
+DEVICETYPE=ovs
+TYPE=OVSBridge
+BOOTPROTO=static
+IPADDR=192.168.3.10
+NETMASK=255.255.255.0 
+GATEWAY=192.168.3.1
+DNS1=192.168.3.1
+HOTPLUG=no
+```
+
+
+and then check ovs 
+```shell
+# ovs-vsctl add-br br-k8s
+# ovs-vsctl add-port br-k8s enp24s0
+# ovs-vsctl show 
+6f640d61-54ac-4644-b6b8-3b27db02294b
+    Bridge "br-k8s"
+        Port "enp24s0"
+            Interface "enp24s0"
+        Port "br-k8s"
+            Interface "br-k8s"
+                type: internal
+    ovs_version: "2.10.0"
+```
+- or we can use nmcli to create them
 ```shell
 #!/bin/sh
 
 # create ovs bridge named KubeBridge0
-nmcli conn add type ovs-bridge conn.interface KubeBridge0 autoconnect yes
+nmcli conn add type ovs-bridge conn.interface br-k8s autoconnect yes
 
-# add add a port to the bridge to encapsulate internal ovs interface (MgmtIface0)
-nmcli conn add type ovs-port conn.interface MgmtPort0 master KubeBridge0 autoconnect yes
+# add add a port to the bridge to encapsulate internal ovs interface (br-k8s)
+nmcli conn add type ovs-port conn.interface br-k8s master br-k8s autoconnect yes
 
-# add internal ovs interface to the create MgmtPort0 port 
-nmcli conn add type ovs-interface conn.interface MgmtIface0 master MgmtPort0 autoconnect yes ipv4.method auto
+# add internal ovs interface to the create br-k8s port
+nmcli conn add type ovs-interface conn.interface br-k8s master br-k8s autoconnect yes ipv4.method auto
 
 # add another port to the bridge  to encapsulate host ethernet interface (enp24s0)
-nmcli conn add type ovs-port conn.interface enp24s0Port0 master KubeBridge0 autoconnect yes
+nmcli conn add type ovs-port conn.interface enp24s0 master br-k8s autoconnect yes
 
 # attach host ethernet interface to the port
-nmcli conn add type ethernet conn.interface enp24s0 master enp24s0Port0 autoconnect yes
-```
-
-and then check ovs 
-```shell
-#ovs-vsctl show
-6f640d61-54ac-4644-b6b8-3b27db02294b
-    Bridge "KubeBridge0"
-        Port "MgmtPort0"
-            Interface "MgmtIface0"
-                type: internal
-        Port "enp24s0Port0"
-            Interface "enp24s0"
-                type: system
-    ovs_version: "2.10.0"
+nmcli conn add type ethernet conn.interface enp24s0 master enp24s0 autoconnect yes
 ```
 
 2. then add more internal interfaces which can be used more VMs
 ```shell
-#ovs-vsctl show
-ovs-vsctl add-port KubeBridge0 vnet0  -- set Interface vnet0  type=internal
-ovs-vsctl add-port KubeBridge0 vnet1  -- set Interface vnet1  type=internal
-ovs-vsctl add-port KubeBridge0 vnet2  -- set Interface vnet2  type=internal
-ovs-vsctl add-port KubeBridge0 vnet3  -- set Interface vnet3  type=internal
-ovs-vsctl add-port KubeBridge0 vnet4  -- set Interface vnet4  type=internal
-ovs-vsctl add-port KubeBridge0 vnet5  -- set Interface vnet5  type=internal
-ovs-vsctl add-port KubeBridge0 vnet6  -- set Interface vnet6  type=internal
-
+ovs-vsctl add-port br-k8s vnet0  -- set interface vnet0 type=internal
+ovs-vsctl add-port br-k8s vnet1  -- set interface vnet1 type=internal
+ovs-vsctl add-port br-k8s vnet2  -- set interface vnet2 type=internal
+ovs-vsctl add-port br-k8s vnet3  -- set interface vnet3 type=internal
+ovs-vsctl add-port br-k8s vnet4  -- set interface vnet4 type=internal
+ovs-vsctl add-port br-k8s vnet5  -- set interface vnet5 type=internal
+ovs-vsctl add-port br-k8s vnet6  -- set interface vnet6 type=internal
 ```
 
 then check the port 
 ```shell
 #ovs-vsctl show
 6f640d61-54ac-4644-b6b8-3b27db02294b
-    Bridge "KubeBridge0"
-        Port "vnet5"
-            Interface "vnet5"
-                type: internal
+    Bridge "br-k8s"
         Port "vnet1"
             Interface "vnet1"
                 type: internal
-        Port "vnet4"
-            Interface "vnet4"
+        Port "vnet3"
+            Interface "vnet3"
+                type: internal
+        Port "enp24s0"
+            Interface "enp24s0"
+        Port "vnet2"
+            Interface "vnet2"
+                type: internal
+        Port "br-k8s"
+            Interface "br-k8s"
                 type: internal
         Port "vnet6"
             Interface "vnet6"
                 type: internal
-        Port "vnet2"
-            Interface "vnet2"
-                type: internal
-        Port "MgmtPort0"
-            Interface "MgmtIface0"
-                type: internal
-        Port "enp24s0Port0"
-            Interface "enp24s0"
-                type: system
-        Port "vnet3"
-            Interface "vnet3"
-                type: internal
         Port "vnet0"
             Interface "vnet0"
+                type: internal
+        Port "vnet4"
+            Interface "vnet4"
+                type: internal
+        Port "vnet5"
+            Interface "vnet5"
                 type: internal
     ovs_version: "2.10.0"
 ```
