@@ -73,8 +73,7 @@ if we need to configure it manually, following steps are required
 
 - Convert the volumes to thinpool and a storage location for metadata for the thinpool. using `lvconvert` command
     ```shell
-    lvconvert -y --zero n -c 512K --thinpool docker/thinpool 
-    --poolmetadata docker/thinpoolmeta
+    lvconvert -y --zero n -c 512K --thinpool docker/thinpool   --poolmetadata docker/thinpoolmeta
     ```
 
 - Configure autoextension of thinpool via an `lvm` profile
