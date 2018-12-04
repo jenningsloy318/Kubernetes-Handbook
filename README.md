@@ -78,3 +78,9 @@ Quagga:
 2. Master nodes disable the workload
 3. Use IPVS for service proxy(kube-router or kube-proxy)
 4. Use NFS as the storage backend  
+
+
+
+
+# Reference Links
+- https://kairen.github.io/2018/07/09/kubernetes/deploy/manual-v1.11/
