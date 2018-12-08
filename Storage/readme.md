@@ -10,7 +10,7 @@ Currently many storage drivers are in-tree code within the core kubernetes, to d
     - one container `quay.io/k8scsi/driver-registrar:xxx` to register the `CSI volume driver` in the same pod of the daemonset to kubernetes
 3. Provisioner:  watch the Kubernetes API on behalf of the external CSI volume driver to handle Provisioning and deletion requests. 
 4. Attacher: watch the Kubernetes API on behalf of the external CSI volume driver to handle attach/detach requests.
-    > provisioner and attacher must be running in a statfulset with only 1 repica; to commumicate with `CSI volume driver`, just mount the `CSI volume driver` socket driver directory into them
+    > provisioner and attacher must be running in a statfulset with only 1 repica; to commumicate with `CSI volume driver`, just mount the `CSI volume driver` socket driver directory into them or each also have a `CSI volume driver` container alongside with it.
 5. In-Tree CSI Volume Plugin: Contain all the logic required for Kubernetes to communicate with an arbitrary, out-of-tree, third-party CSI compatible volume driver.
     
 [Recommended Mechanism for Deploying CSI Drivers on Kubernetes](https://github.com/kubernetes/community/blob/master/contributors/design-proposals/storage/container-storage-interface.md#recommended-mechanism-for-deploying-csi-drivers-on-kubernetes)
