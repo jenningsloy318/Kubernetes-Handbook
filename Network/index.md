@@ -4,6 +4,11 @@ All network plugins are list on https://kubernetes.io/docs/concepts/cluster-admi
 
 When we are about to create a kubernetes cluster, one thing need to consider is if we need to integrated with existing infrastructure in the environment, that is if pods can be accessible by existing network directly.
 
+The kubelet has a single default network plugin, and a default network common to the entire cluster. It probes for plugins when it starts up, remembers what it found, and executes the selected plugin at appropriate times in the pod lifecycle (this is only true for Docker, as rkt manages its own CNI plugins)
+
+- cni-bin-dir: Kubelet probes this directory for plugins on startup
+- network-plugin: The network plugin to use from cni-bin-dir. It must match the name reported by a plugin probed from the plugin directory. For CNI plugins, this is simply “cni”.
+
 ## Network plugins flavors
 1. [CNI](https://github.com/containernetworking/cni) adhere to the appc/CNI specification, designed for interoperability.
 - Each cni network plugin will support following actions:
