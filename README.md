@@ -54,7 +54,7 @@ Quagga:
 - separate Linux host running as a router
 - can work with metallb to assign the loadbalancer IP for services
 - also can work with kube-router to expose POD/SVC IP
-- also can work with kube-router to  add external IP for service
+- also can work with kube-router to add external IP for service
 
 ## 6. External DNS
 - PowerDNS
