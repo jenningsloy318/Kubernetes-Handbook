@@ -16,3 +16,12 @@ Currently many storage drivers are in-tree code within the core kubernetes, to d
 [Recommended Mechanism for Deploying CSI Drivers on Kubernetes](https://github.com/kubernetes/community/blob/master/contributors/design-proposals/storage/container-storage-interface.md#recommended-mechanism-for-deploying-csi-drivers-on-kubernetes)
 
 
+#### feature Gate
+as CSI need serveral feature gate enabled, by passing the parameters to kube-apiserver/kube-controller-manager/kubelet
+
+```
+--feature-gates=VolumeSnapshotDataSource=true,KubeletPluginsWatcher=true,CSINodeInfo=true,CSIDriverRegistry=true,BlockVolume=true,CSIBlockVolume=true,CSIDriverRegistry=true,Topology=true
+```
+### kubelet config
+
+be sure set kubelet `--root-dir` (e.g `/var/lib/kubelet/`) as the csi drivers will mount and share this directory.

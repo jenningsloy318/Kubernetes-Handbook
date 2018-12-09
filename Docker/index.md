@@ -18,6 +18,10 @@ Modify `ExecStart=` to `ExecStart=/usr/bin/dockerd`, since all configurations ar
 and add `Slice=container.slice` in `[Service]` section.
 
 example docker.service file can be found [here](./docker.srvice)
+
+
+modify `MountFlags=shared` to adhere to the `CSI` to let kubernetes use CSI storages.
+
 ## 3. configure docker parameter via `/etc/docker/daemon.json`
 ```json
 {
