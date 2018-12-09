@@ -26,4 +26,4 @@
 ## Kubernetes Advanced
 
 - [8. Affinity ](./Affinity/index.md)
-- [9. Tanit ](./Tanit/index.md)
+- [9. Taint ](./Taint/index.md)
