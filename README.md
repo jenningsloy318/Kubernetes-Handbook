@@ -78,7 +78,7 @@ Quagga:
 1. All kubernetes master components can be deployed etheir in binary or pod mode
 2. Master nodes disable the workload
 3. Use IPVS for service proxy(kube-router or kube-proxy)
-4. Use NFS as the storage backend  
+4. Use glusterfs as the storage backend as we need to use CSI
 
 
 
