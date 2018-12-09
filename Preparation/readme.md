@@ -251,7 +251,7 @@ staticClients:
 ```
 - create slapd.conf, allow user `cn=binduser,dc=k8s,dc=org` can access all objects which can be uesed for binding
     ```conf
-
+    database monitor
     access to *
             by dn.exact="gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth" read
             by dn.exact="cn=Manager,dc=k8s,dc=org" read
