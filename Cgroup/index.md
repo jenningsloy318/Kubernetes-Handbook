@@ -29,7 +29,7 @@ Unlike v1, cgroup v2 has only single hierarchy, we can find details of cgroup v2
 
 
 
-# Content
+# 2. Content
 
 This chapter will discuss how to configure cgroup and how to use them in kubernetes components
   - [1.1 Cgroup configuration](Config.md)

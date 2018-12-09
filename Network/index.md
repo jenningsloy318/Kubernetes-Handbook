@@ -11,17 +11,18 @@ The kubelet has a single default network plugin, and a default network common to
 
 ## Network plugins flavors
 1. [CNI](https://github.com/containernetworking/cni) adhere to the appc/CNI specification, designed for interoperability.
-- Each cni network plugin will support following actions:
-    - ADD: Add container to network
-    - DEL: Delete container from network
-    - CHECK: Check container's networking is as expected
-    - VERSION: Report version
-- CNI support following two extra features:
-    - support `hostPort` via official `portmap` plugin offered by the CNI plugin team;
-    - supports pod ingress and egress traffic shaping via official `bandwidth` plugin offered by the CNI plugin team;
+    - Each cni network plugin will support following actions:
+        - ADD: Add container to network
+        - DEL: Delete container from network
+        - CHECK: Check container's networking is as expected
+        - VERSION: Report version
+    - CNI support following two extra features:
+        - support `hostPort` via official `portmap` plugin offered by the CNI plugin team;
+        - supports pod ingress and egress traffic shaping via official `bandwidth` plugin offered by the CNI plugin team;
 
 2. kubenet: implements basic cbr0 using the bridge and host-local CNI plugins
 Kubenet is a very basic, simple network plugin, on Linux only. It does not, of itself, implement more advanced features like cross-node networking or network policy. It is typically used together with a cloud provider that sets up routing rules for communication between nodes, or in single-node environments
+
 ## Network Type
 
 1. layer 2 (switching)
