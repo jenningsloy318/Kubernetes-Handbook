@@ -214,8 +214,8 @@ connectors:
     insecureNoSSL: true
 
     # This would normally be a read-only user.
-    bindDN: cn=admin,dc=k8s,dc=org
-    bindPW: admin
+    bindDN: cn=binduser,dc=k8s,dc=org
+    bindPW: jennings
 
     usernamePrompt: Email Address
 
