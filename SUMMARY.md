@@ -14,5 +14,13 @@
 
 - [4. Certificates ](Certificates/index.md)
 
+- [5. Network ](Network/readme.md)
+
+- [6. Loadbalancer ](Loadbalancer/readme.md)
+
+- [7. Storage ](Storage/readme.md)
 
 
+## Kubernetes Advanced
+
+- [8. Tanit and Affinity ](./TanitAndAffinity/readme.md)
