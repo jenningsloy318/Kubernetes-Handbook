@@ -19,7 +19,7 @@
   - [5.2 cilium ](Network/cilium/index.md)
   - [5.3 kube-router ](Network/kube-router/index.md)
 - [6. Loadbalancer ](Loadbalancer/index.md)
-  - [6.1 Metallb ](Loadbalancer/Metallb/index.md)
+  - [6.1 MetalLB ](Loadbalancer/MetalLB/index.md)
 - [7. Storage ](Storage/index.md)
 
 
