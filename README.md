@@ -11,6 +11,7 @@
 |Node|IP address(k8s) | role| version|
 |------------|----------------|------|-----|
 |kube-router| 192.168.3.100|Quagga| x |
+|kube-idp| 192.168.3.101|dex+openldap| x |
 |kube-master1| 192.168.3.101|master| 1.13|
 |kube-master2| 192.168.3.102|master| 1.13|
 |kube-master3| 192.168.3.103|master| 1.13|

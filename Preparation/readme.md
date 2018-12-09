@@ -191,3 +191,142 @@ router bgp 64513
 !                                                                                                    
 log stdout  
 ```
+
+5. configure kube-idp
+- start dex with following conf
+```yml
+issuer: http://192.168.3.101:5556/dex
+storage:
+  type: sqlite3
+  config:
+    file: examples/dex.db
+web:
+  http: 0.0.0.0:5556
+
+connectors:
+- type: ldap
+  name: OpenLDAP
+  id: ldap
+  config:
+    host: localhost:389
+
+    # No TLS for this setup.
+    insecureNoSSL: true
+
+    # This would normally be a read-only user.
+    bindDN: cn=admin,dc=k8s,dc=org
+    bindPW: admin
+
+    usernamePrompt: Email Address
+
+    userSearch:
+      baseDN: ou=People,dc=k8s,dc=org
+      filter: "(objectClass=person)"
+      username: mail
+      # "DN" (case sensitive) is a special attribute name. It indicates that
+      # this value should be taken from the entity's DN not an attribute on
+      # the entity.
+      idAttr: DN
+      emailAttr: mail
+      nameAttr: cn
+
+    groupSearch:
+      baseDN: ou=Groups,dc=k8s,dc=org
+      filter: "(objectClass=groupOfNames)"
+
+      # A user is a member of a group when their DN matches
+      # the value of a "member" attribute on the group entity.
+      userAttr: DN
+      groupAttr: member
+
+      # The group name should be the "cn" value.
+      nameAttr: cn
+
+staticClients:
+- id: k8s
+  redirectURIs:
+  - 'http://127.0.0.1:5555/callback'
+  name: 'k8s'
+  secret: ZXhhbXBsZS1hcHAtc2VjcmV0
+```
+- create slapd.conf, allow user `cn=binduser,dc=k8s,dc=org` can access all objects which can be uesed for binding
+    ```conf
+
+    access to *
+            by dn.exact="gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth" read
+            by dn.exact="cn=Manager,dc=k8s,dc=org" read
+            by dn.exact="cn=binduser,dc=k8s,dc=org" read
+            by * none
+
+    database      bdb
+    suffix        "dc=k8s,dc=org"
+    checkpoint    1024 15
+    rootdn        "cn=Manager,dc=k8s,dc=org"
+    rootpw        {MD5}+UNqsTwwk4dy7iRr1pIHNA==
+    ```
+
+- Create domain and add sub-directory, then add multiple users/groups  
+
+    k8s-net.ldif   
+    ```ldif
+    dn: dc=k8s,dc=org
+    objectClass: dcObject
+    objectClass: organization
+    o: k8s Company
+    dc: k8s
+
+
+    dn: cn=binduser,ou=People,dc=k8s,dc=org
+    objectClass: person
+    objectClass: inetOrgPerson
+    sn: binduser
+    cn: binduser
+    mail: binduser@k8s.org
+    userpassword: jennings
+
+
+    dn: ou=People,dc=k8s,dc=org
+    objectClass: organizationalUnit
+    ou: People
+
+    dn: cn=root,ou=People,dc=k8s,dc=org
+    objectClass: person
+    objectClass: inetOrgPerson
+    sn: admin
+    cn: root
+    mail: root@k8s.org
+    userpassword: jennings
+
+    dn: cn=jenningsl,ou=People,dc=k8s,dc=org
+    objectClass: person
+    objectClass: inetOrgPerson
+    sn: liu
+    cn: jenningsl
+    mail: jenningsl@k8s.org
+    userpassword: jennings
+
+    dn: cn=user1,ou=People,dc=k8s,dc=org
+    objectClass: person
+    objectClass: inetOrgPerson
+    sn: wang
+    cn: user1
+    mail: user1@k8s.org
+    userpassword: jennings
+
+    # Group definitions.
+
+    dn: ou=Groups,dc=k8s,dc=org
+    objectClass: organizationalUnit
+    ou: Groups
+
+    dn: cn=admins,ou=Groups,dc=k8s,dc=org
+    objectClass: groupOfNames
+    cn: admins
+    member: cn=jenningsl,ou=People,dc=k8s,dc=org
+    member: cn=root,ou=People,dc=k8s,dc=org
+
+    dn: cn=developers,ou=Groups,dc=k8s,dc=org
+    objectClass: groupOfNames
+    cn: developers
+    member: cn=user1,ou=People,dc=k8s,dc=org
+    ```
