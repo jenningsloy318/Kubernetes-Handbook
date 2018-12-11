@@ -74,7 +74,13 @@ Quagga:
     - https://github.com/krishnapmv/k8s-ldap
 
 
+## 9. ingress controller
+- [F5 BIG-IP Controller for Kubernetes](https://clouddocs.f5.com/products/connectors/k8s-bigip-ctlr/v1.5/)
+- Nginx ingress controller
 
+## 10. cloud driver integration
+- [vSphere Storage for Kubernetes](https://vmware.github.io/vsphere-storage-for-kubernetes/documentation/index.html), currently vSphere cloud driver only support storage apis
+- [NSX with Kubernetes](https://www.kovarus.com/blog/kubernetes-k8s-integration-with-vmware-nsx-t/)
 # Cluster Deployment
 
 1. All kubernetes master components can be deployed etheir in binary or pod mode
