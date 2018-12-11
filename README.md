@@ -68,10 +68,11 @@ Quagga:
 - https://kubernetes.io/docs/reference/access-authn-authz/bootstrap-tokens/
 
 ## 8. User Management 
-- OpenLDAP 
-- [Dex](https://github.com/dexidp/dex)
-- apiserver configure odic 
-- apiserver enable RBAC
+- OpenLDAP + [Dex](https://github.com/dexidp/dex)
+- Reference Links: 
+    - https://medium.com/@pmvk/step-by-step-guide-to-integrate-ldap-with-kubernetes-1f3fe1ec644e  
+    - https://github.com/krishnapmv/k8s-ldap
+
 
 
 # Cluster Deployment
