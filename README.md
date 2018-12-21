@@ -87,3 +87,4 @@ Quagga:
 
 # Reference Links
 - https://kairen.github.io/2018/07/09/kubernetes/deploy/manual-v1.11/
+- Docker registry： registry.aliyuncs.com/google_containers/
