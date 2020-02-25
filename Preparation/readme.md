@@ -32,54 +32,35 @@ HOTPLUG=no
 
 and then check ovs 
 ```shell
-# ovs-vsctl add-br br-k8s
-# ovs-vsctl add-port br-k8s enp24s0
+# ovs-vsctl add-br br-ovs
+# ovs-vsctl add-port br-ovs enp24s0
 # ovs-vsctl show 
 6f640d61-54ac-4644-b6b8-3b27db02294b
-    Bridge "br-k8s"
+    Bridge "br-ovs"
         Port "enp24s0"
             Interface "enp24s0"
-        Port "br-k8s"
-            Interface "br-k8s"
+        Port "br-ovs"
+            Interface "br-ovs"
                 type: internal
     ovs_version: "2.10.0"
-```
-- or we can use nmcli to create them
-```shell
-#!/bin/sh
-
-# create ovs bridge named KubeBridge0
-nmcli conn add type ovs-bridge conn.interface br-k8s autoconnect yes
-
-# add add a port to the bridge to encapsulate internal ovs interface (br-k8s)
-nmcli conn add type ovs-port conn.interface br-k8s master br-k8s autoconnect yes
-
-# add internal ovs interface to the create br-k8s port
-nmcli conn add type ovs-interface conn.interface br-k8s master br-k8s autoconnect yes ipv4.method auto
-
-# add another port to the bridge  to encapsulate host ethernet interface (enp24s0)
-nmcli conn add type ovs-port conn.interface enp24s0 master br-k8s autoconnect yes
-
-# attach host ethernet interface to the port
-nmcli conn add type ethernet conn.interface enp24s0 master enp24s0 autoconnect yes
 ```
 
 2. then add more internal interfaces which can be used more VMs
 ```shell
-ovs-vsctl add-port br-k8s vnet0  -- set interface vnet0 type=internal
-ovs-vsctl add-port br-k8s vnet1  -- set interface vnet1 type=internal
-ovs-vsctl add-port br-k8s vnet2  -- set interface vnet2 type=internal
-ovs-vsctl add-port br-k8s vnet3  -- set interface vnet3 type=internal
-ovs-vsctl add-port br-k8s vnet4  -- set interface vnet4 type=internal
-ovs-vsctl add-port br-k8s vnet5  -- set interface vnet5 type=internal
-ovs-vsctl add-port br-k8s vnet6  -- set interface vnet6 type=internal
+ovs-vsctl add-port br-ovs vnet0  -- set interface vnet0 type=internal
+ovs-vsctl add-port br-ovs vnet1  -- set interface vnet1 type=internal
+ovs-vsctl add-port br-ovs vnet2  -- set interface vnet2 type=internal
+ovs-vsctl add-port br-ovs vnet3  -- set interface vnet3 type=internal
+ovs-vsctl add-port br-ovs vnet4  -- set interface vnet4 type=internal
+ovs-vsctl add-port br-ovs vnet5  -- set interface vnet5 type=internal
+ovs-vsctl add-port br-ovs vnet6  -- set interface vnet6 type=internal
 ```
 
 then check the port 
 ```shell
 #ovs-vsctl show
 6f640d61-54ac-4644-b6b8-3b27db02294b
-    Bridge "br-k8s"
+    Bridge "br-ovs"
         Port "vnet1"
             Interface "vnet1"
                 type: internal
@@ -91,8 +72,8 @@ then check the port
         Port "vnet2"
             Interface "vnet2"
                 type: internal
-        Port "br-k8s"
-            Interface "br-k8s"
+        Port "br-ovs"
+            Interface "br-ovs"
                 type: internal
         Port "vnet6"
             Interface "vnet6"
@@ -330,3 +311,21 @@ staticClients:
     cn: developers
     member: cn=user1,ou=People,dc=k8s,dc=org
     ```
+
+
+5. configure repos
+    - kubernetes
+        ```
+        curl https://mirrors.aliyun.com/kubernetes/apt/doc/apt-key.gpg | apt-key add - 
+        cat <<EOF >/etc/apt/sources.list.d/kubernetes.list
+        deb https://mirrors.aliyun.com/kubernetes/apt/ kubernetes-xenial main
+        EOF
+        ```
+    - docker-ce
+        ```
+        curl -fsSL https://mirrors.aliyun.com/docker-ce/linux/ubuntu/gpg | sudo apt-key add -
+        cat <<EOF >/etc/apt/sources.list.d/docker-ce.list
+        deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable
+        EOF
+        ```
+
