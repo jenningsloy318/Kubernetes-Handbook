@@ -1,0 +1,14 @@
+spec:
+  template:
+    spec:
+      tolerations:
+      # this is required so CCM can bootstrap itself
+      - key: node.cloudprovider.kubernetes.io/uninitialized
+        value: "true"
+        effect: NoSchedule
+      # this is to have the daemonset runnable on master nodes
+      # the taint may vary depending on your cluster setup
+      - key: node-role.kubernetes.io/master
+        effect: NoSchedule
+      # this is to restrict CCM to only run on master nodes
+      # the node selector may vary depending on your cluster setup
