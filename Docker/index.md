@@ -36,3 +36,35 @@ modify `MountFlags=shared` to adhere to the `CSI` to let kubernetes use CSI stor
 
 }
 ```
+## docker registry proxy 
+- [Config](./config.yml) file for docker registry
+    ```yaml
+    version: 0.1
+    log:
+      fields:
+        service: registry
+    storage:
+      inmemory:
+        delete:
+          enabled: false
+        cache:
+          blobdescriptor: inmemory
+    http:
+      addr: :5000
+      headers:
+        X-Content-Type-Options: [nosniff]
+    health:
+      storagedriver:
+        enabled: true
+        interval: 10s
+        threshold: 3
+    proxy:
+      remoteurl: https://registry.aliyuncs.com
+    ```
+- run the registry proxy
+    ```sh
+    # sudo docker run -d --restart=always -p 443:443  --name docker-registry-proxy -v `pwd`/config.yml:/etc/docker/registry/config.yml  -v "$(pwd)"/registry-certs:/certs  -e REGISTRY_HTTP_ADDR=0.0.0.0:443 -e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/docker.pem -e REGISTRY_HTTP_TLS_KEY=/certs/docker.key  docker.io/library/registry
+    ```
+
+> Note: 
+> - if we need to proxy multiple registries, should setup one proxy for each registry
