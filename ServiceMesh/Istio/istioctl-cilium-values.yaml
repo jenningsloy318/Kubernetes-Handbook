@@ -1,0 +1,59 @@
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+metadata:
+  namespace: istio-system
+spec:
+  components: 
+    cni:
+      hub: docker.io/istio
+      tag: 1.5.2
+      enabled: true
+      namespace: kube-system
+    telemetry:
+      enabled: true
+  meshConfig:
+    enableTracing: true
+  addonComponents:
+    prometheus:
+      enabled: false
+    grafana:
+      enabled: false
+    kiali:
+      enabled: true
+    tracing:
+      enabled: true
+  values:
+    global:
+      controlPlaneSecurityEnabled: true
+      istiod:
+        enabled: true
+      mtls:
+        enabled: true
+      k8sIngress:
+        enabled: false        
+      sds:
+        enabled: true        
+    sidecarInjectorWebhook:
+      enabled: false
+    gateways:
+      istio-ingressgateway:
+        enabled: true
+        type: LoadBalancer
+    kiali:
+      hub: quay.io/kiali
+      tag: v1.17
+      prometheusAddr: http://monitoring-prometheus-oper-prometheus.monitoring.svc.cluster.local:9090
+      dashboard:
+        grafanaURL:
+        grafanaInClusterURL: http://monitoring-grafana.monitoring.svc:80
+        jaegerURL: 
+        jaegerInClusterURL: http://tracing/jaeger
+    istio_cni:
+      enabled: true
+      excludeNamespaces:
+       - istio-system
+       - kube-system 
+    mixer:
+      telemetry:
+        hub: docker.io/istio
+        tag: 1.5.2
