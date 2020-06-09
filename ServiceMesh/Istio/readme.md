@@ -21,3 +21,10 @@ kubectl label namespace jaas istio-injection=enabled
 ```
 
 4. then create/restart pod to take effect
+
+
+
+
+## configure istio-ingressgateway 
+1. add proxy-body-size equivilent configure in istio-ingressgateway via [proxy-body-size.yaml](proxy-body-size.yaml)
+   
