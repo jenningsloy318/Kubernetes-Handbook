@@ -264,3 +264,10 @@ ID   Frontend             Service Type   Backend
     ```
 
 7.(optional) we can also install `bird` or other router softeware to anounce BGP routes about this `external CIDR` to the core switches or routes, so we don't need to add static routes manually
+
+
+---
+## cilium  1.10 has XDP-based Standalone Load Balancer(1) and with help of BGP(metalLB)(2), it provies VIP access from outside
+
+
+
